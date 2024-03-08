@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zomato-app-deployment
+spec:
+  replicas: 2  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: zomato-app
+  template:
+    metadata:
+      labels:
+        app: zomato-app
+    spec:
+      containers:
+        - name: zomato-app-container
+          image: sevenajay/2048:latest  # Use your actual Docker image name and tag
+          ports:
+            - containerPort: 4000  # The port your React app is listening on
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zomato-app-service
+spec:
+  selector:
+    app: zomato-app
+  ports:
+    - protocol: TCP
+      port: 80  # The port exposed by the service within the cluster
+      targetPort: 4000  # The port your React app is listening on inside the pod
+  type: LoadBalancer
